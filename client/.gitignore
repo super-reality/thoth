@@ -2,8 +2,5 @@ node_modules
 build
 .DS_Store
 dist
-<<<<<<< HEAD
 LICENSE
-=======
 .env
->>>>>>> Fix thrown errors from master by ignoring TS checks, add/modify .env

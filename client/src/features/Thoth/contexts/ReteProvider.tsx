@@ -45,9 +45,6 @@ export interface ReteContext extends EngineContext {
   ) => void
 }
 
-<<<<<<< HEAD
-const Context = createContext<ReteContext>(undefined!)
-=======
 const Context = createContext({
   onInspector: () => { },
   onPlayTest: () => { },
@@ -76,7 +73,6 @@ const Context = createContext({
       resolve({} as { [key: string]: unknown; error: unknown })
     }),
 })
->>>>>>> Fix thrown errors from master by ignoring TS checks, add/modify .env
 
 export const useRete = () => useContext(Context)
 
