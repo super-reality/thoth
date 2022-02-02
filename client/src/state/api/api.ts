@@ -6,7 +6,7 @@ import { latitudeApiRootUrl } from '../../config'
 export const rootApi = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: latitudeApiRootUrl,
+    baseUrl: `${latitudeApiRootUrl}/`,
     prepareHeaders: async headers => {
       const authHeader = await getAuthHeader()
       if (authHeader?.Authorization)
