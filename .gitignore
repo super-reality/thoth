@@ -10,5 +10,9 @@ build
 
 # Generated Styles for AreaPlugin
 core/src/plugins/areaPlugin/style.css.d.ts
+<<<<<<< HEAD
 .idea
 server/.env
+=======
+yarn-error.log
+>>>>>>> added yarn lock error in git ignore
