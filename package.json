@@ -37,9 +37,7 @@
   },
   "devDependencies": {
     "craco": "^0.0.3",
-    "lerna": "^4.0.0"
-  },
-  "dependencies": {
+    "lerna": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "concurrently": "^6.2.1",
@@ -47,9 +45,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.4.1",
-    "sequelize": "^6.14.0",
-    "sqlite": "^4.0.23",
-    "sqlite3": "^5.0.2"
-  }
+    "prettier": "^2.4.1"
+  },
+  "dependencies": {}
 }
