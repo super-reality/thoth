@@ -50,7 +50,6 @@ export class AgentManager extends ThothComponent<Promise<WorkerReturn>> {
   }
 
   builder(node: ThothNode) {
-    console.log(node,'node')
     const outName = new Rete.Output('agent', 'Name', anySocket)
     const outPersonality = new Rete.Output(
       'personality',
@@ -65,11 +64,12 @@ export class AgentManager extends ThothComponent<Promise<WorkerReturn>> {
       value,
     })
 
-    const dataOutput = new Rete.Output('trigger', 'Trigger', triggerSocket)
+    const dataInput = new Rete.Input('trigger', 'Trigger In', triggerSocket,true)
+    const dataOutput = new Rete.Output('trigger', 'Trigger Out', triggerSocket)
     const outDialog = new Rete.Output('dialog', 'Dialog', anySocket)
     const outMoral = new Rete.Output('morals and Ethics', 'Morals and Ethics', anySocket)
     const outMonologue = new Rete.Output('monologue', 'Monologue', anySocket)
-    const outGreeting = new Rete.Output('greetings', 'Greetings', anySocket)
+    const outGreeting = new Rete.Output('greetings', 'Greetings []', anySocket)
   
 
     const personality = new InputControl({
@@ -90,6 +90,7 @@ export class AgentManager extends ThothComponent<Promise<WorkerReturn>> {
       .addOutput(outGreeting)
       .addOutput(dataOutput)
       .addControl(inputDropdown)
+      .addInput(dataInput)
     )
   }
 
@@ -105,9 +106,9 @@ export class AgentManager extends ThothComponent<Promise<WorkerReturn>> {
     console.log('personality is', personality)
 
     const res = await axios.get(`${serverUrl}/agent?agent=${personality}`)
-    console.log("res is", res)
+    console.log("res is 11", res)
+    node.display(res)
     const agent = res.data.agent
-
     return {
       name: agent ?? res.data.name ?? res.data.personality ?? 'testestest',
       agent: agent,

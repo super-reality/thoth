@@ -9,6 +9,7 @@ const AgentManager = () => {
   const [agents, setAgents] = useState([] as any[])
   const [currentAgentData, setCurrentAgentData] = useState({ id: 'unitialized', agent: 'unitialized' })
   const [dialog, setDialog] = useState('')
+  const [agentName, setAgentName] = useState('')
   const [morals, setMorals] = useState('')
   const [facts, setFacts] = useState('')
   const { openModal, closeModal } = useModal()
@@ -17,6 +18,7 @@ const AgentManager = () => {
   const [greetings, setGreetings] = useState('')
   const { enqueueSnackbar } = useSnackbar()
   const [files, setFiles] = useState("");
+  
   let importData = files && JSON.parse(files);
   const {
     handleSubmit,
@@ -80,6 +82,7 @@ const AgentManager = () => {
     console.log('res.data is', res.data)
 
     setCurrentAgentData(res.data)
+    setAgentName(res.data.agent)
     setDialog(res.data.dialog)
     setMorals(res.data.morals)
     setFacts(res.data.facts)
@@ -218,9 +221,9 @@ const AgentManager = () => {
                 <textarea
                   className="form-text-area"
                   onChange={e => {
-                    setDialog(e.target.value)
+                    setAgentName(e.target.value)
                   }}
-                  value={importData && importData.Dialogue ? importData.Dialogue : dialog}
+                  value={importData && importData.Dialogue ? importData.Dialogue : agentName}
                 ></textarea>
               </div>
               <div className="agent-select agent-Manager" style={{ width: '100%' }}>
@@ -234,8 +237,8 @@ const AgentManager = () => {
                 >
                   {(agents as any)?.length > 0 &&
                     (agents as any)?.map((agent, idx) => (
-                      <option value={agent.personality} key={idx}>
-                        {agent.personality}
+                      <option value={agent.name} key={idx}>
+                        {agent.name}
                       </option>
                     ))
                   }

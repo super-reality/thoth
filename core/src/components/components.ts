@@ -80,6 +80,7 @@ import { TimeDetectorComponent } from './TimeDetector'
 import { TriggerIn } from './TriggerIn'
 import { TriggerOut } from './TriggerOut'
 import { WhileLoop } from './WhileLoop'
+import { EntityManager } from './EntityManager'
 
 // Here we load up all components of the builder into our editor for usage.
 // We might be able to programatically generate components from enki
@@ -92,6 +93,7 @@ export const components = {
   difficultyDetectorComponent: () => new DifficultyDetectorComponent(),
   // enkiTask: () => new EnkiTask(),
   entityDetector: () => new EntityDetector(),
+  entityManager: () => new EntityManager(),
   fastQuestionDetector: () => new FastQuestionDetector(),
   fastGreetingDetector: () => new FastGreetingDetector(),
   fastProfanityDetector: () => new FastProfanityDetector(),
