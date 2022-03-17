@@ -11,7 +11,7 @@ import {
 import { FewshotControl } from '../dataControls/FewshotControl'
 import { EngineContext } from '../engine'
 import { TaskOptions } from '../plugins/taskPlugin/task'
-import { stringSocket, triggerSocket, arraySocket } from '../sockets'
+import { stringSocket, triggerSocket } from '../sockets'
 import { ThothComponent } from '../thoth-component'
 const fewshot = `Given an action, detect what entities the player is interacting with. Ignore entities that the player is just asking about.
 Entity types: food, person, creature, object, place, other, none
