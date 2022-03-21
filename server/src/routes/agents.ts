@@ -31,7 +31,6 @@ const getAgentHandler = async (ctx: Koa.Context) => {
 }
 
 const createOrUpdateAgentHandler = async (ctx: Koa.Context) => {
-  console.log('ctx.request.body is ', ctx.request.body)
   const { agent, data } = ctx.request.body
   if (!agent || agent == undefined || agent.length <= 0) {
     ctx.status = 404
@@ -226,7 +225,6 @@ const getAgentInstanceHandler = async (ctx: Koa.Context) => {
 
 const addAgentInstanceHandler = async (ctx: Koa.Context) => {
   const data = ctx.request.body.data
-  console.log('saving agent instance data:', data)
   let instanceId = ctx.request.body.id ?? ctx.request.body.instanceId
 
   if (!instanceId || instanceId === undefined || instanceId <= 0) {
@@ -301,14 +299,19 @@ const getConversation = async (ctx: Koa.Context) => {
   const speaker = ctx.request.query.speaker
   const client = ctx.request.query.client
   const channel = ctx.request.query.channel
+  const maxCount = parseInt(ctx.request.query.maxCount as string)
 
   const conversation = await database.instance.getConversation(
     agent,
     speaker,
     client,
     channel,
-    false
+    false,
+    true,
+    maxCount
   )
+
+  console.log('conversation, query:', ctx.request.query, 'conv:', conversation)
 
   return (ctx.body = conversation)
 }
@@ -342,6 +345,12 @@ const getConversationCount = async (ctx: Koa.Context) => {
     client,
     channel,
     false
+  )
+  console.log(
+    'got conversation for query:',
+    ctx.request.query.agent,
+    'data:',
+    conversation
   )
 
   return (ctx.body = conversation.length)
@@ -478,13 +487,14 @@ const customMessage = async (ctx: Koa.Context) => {
   const sender = ctx.request.body?.sender as string
   const agent = ctx.request.body?.agent as string
   const message = (ctx.request.body?.message as string).trim().toLowerCase()
-  const isVoice = ctx.request.body?.isVoice as boolean
+  let isVoice = ctx.request.body?.isVoice as boolean
   let url: any = ''
-  let response = ''
+  let response = message
 
   if (message.startsWith('[welcome]')) {
     const user = message.replace('[welcome]', '').trim()
     response = 'Welcome ' + user + '!'
+    isVoice = true
   }
   let cmd = message.trim().toLowerCase()
 
@@ -498,6 +508,7 @@ const customMessage = async (ctx: Koa.Context) => {
   }
 
   if (isVoice) {
+    console.log('generating voice')
     const character = 'kurzgesagt'
     const cache = cacheManager.instance.get(
       'global',
@@ -559,6 +570,12 @@ const textCompletion = async (ctx: Koa.Context) => {
 
   if (!stop || stop.length === undefined || stop.length <= 0) {
     stop = ['"""', `${sender}:`, '\n']
+  } else {
+    for (let i = 0; i < stop.length; i++) {
+      if (stop[i] === '$speaker:') {
+        stop[i] = `${sender}:`
+      }
+    }
   }
 
   console.log('textCompletion for prompt:', prompt)
@@ -644,8 +661,9 @@ const requestInformationAboutVideo = async (
   question: string
 ): Promise<string> => {
   const videoInformation = ``
-  const prompt = `Information: ${videoInformation} \n ${sender}: ${question.trim().endsWith('?') ? question.trim() : question.trim() + '?'
-    }\n${agent}:`
+  const prompt = `Information: ${videoInformation} \n ${sender}: ${
+    question.trim().endsWith('?') ? question.trim() : question.trim() + '?'
+  }\n${agent}:`
 
   const modelName = 'davinci'
   const temperature = 0.9
@@ -696,25 +714,6 @@ const chatAgent = async (ctx: Koa.Context) => {
   }
 
   return (ctx.body = out)
-}
-
-const saveConversation = async (ctx: Koa.Context) => {
-  const agent = ctx.request.body.agent as string
-  const speaker = ctx.request.body.speaker as string
-  const conversation = ctx.request.body.conv as string
-  const client = ctx.request.body.client as string
-  const channel = ctx.request.body.channel as string
-
-  await database.instance.setConversation(
-    agent,
-    client,
-    channel,
-    speaker,
-    conversation,
-    false
-  )
-
-  return (ctx.body = 'ok')
 }
 
 export const agents: Route[] = [
@@ -864,10 +863,5 @@ export const agents: Route[] = [
     path: '/chat_agent',
     access: noAuth,
     post: chatAgent,
-  },
-  {
-    path: '/save_conv',
-    access: noAuth,
-    post: saveConversation,
   },
 ]

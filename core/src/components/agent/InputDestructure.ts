@@ -1,10 +1,10 @@
 import Rete from 'rete'
 import { v4 as uuidv4 } from 'uuid'
 
-import { NodeData, ThothNode, ThothWorkerInputs } from '../../types'
-import { Task } from '../plugins/taskPlugin/task'
-import { anySocket } from '../sockets'
-import { ThothComponent, ThothTask } from '../thoth-component'
+import { NodeData, ThothNode, ThothWorkerInputs } from '../../../types'
+import { Task } from '../../plugins/taskPlugin/task'
+import { anySocket } from '../../sockets'
+import { ThothComponent, ThothTask } from '../../thoth-component'
 
 const info = `The input component allows you to pass a single value to your chain.  You can set a default value to fall back to if no value is provided at runtime.  You can also turn the input on to receive data from the playtest input.`
 
@@ -64,8 +64,8 @@ export class InputDestructureComponent extends ThothComponent<InputReturn> {
   }
 
   worker(_node: NodeData, inputs: ThothWorkerInputs) {
-    this._task.closed = ['trigger']
-    console.log('inputs is', inputs)
+    const input = inputs.input != null ? inputs.input[0] : inputs
+    console.log('input destructor:', input)
 
     // If there are outputs, we are running as a module input and we use that value
     return {
