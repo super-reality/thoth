@@ -59,13 +59,12 @@ const AgentManager = () => {
 
   const getAgents = async () => {
     const res = await axios.get(`${thothApiRootUrl}/agents`)
-    console.log("Res is", res)
     if (res.data.length == 0) return setAgents([])
     let newAgents = [] as any[]
     for (let i = 0; i < res.data.length; i++) {
       newAgents.push(res.data[i])
     }
-    console.log('newAgents', newAgents)
+
     setAgents(newAgents)
     setCurrentAgentData(newAgents && newAgents[0])
     if (newAgents && newAgents[0]) {

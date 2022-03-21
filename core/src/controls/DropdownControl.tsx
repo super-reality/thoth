@@ -29,7 +29,8 @@ const ReactDropdownControl = props => {
         const res = await axios.get(`${process.env.REACT_APP_API_ROOT_URL}/agent_data`, {
             params: { agent: e },
         })
-        localStorage.setItem("pernalityList",JSON.stringify(res && res.data))
+        console.log(e,'event')
+        localStorage.setItem("pernalityName",e)
     }
 
     return (

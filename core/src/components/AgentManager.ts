@@ -19,7 +19,6 @@ import { triggerSocket, anySocket } from '../sockets'
 import { ThothComponent } from '../thoth-component'
 
 const info = 'Archive Conversation is used to archive old conversation'
-console.log("process.env is", process.env)
 // TODO: Update this
 const serverUrl =
   process.env.REACT_APP_API_ROOT_URL ??
@@ -102,12 +101,18 @@ export class AgentManager extends ThothComponent<Promise<WorkerReturn>> {
   ) {
     console.log('Handling ', node?.data)
     console.log("serverUrl is", serverUrl)
-    const personality = node?.data?.personality as string
-    console.log('personality is', personality)
 
-    const res = await axios.get(`${serverUrl}/agent?agent=${personality}`)
-    console.log("res is 11", res)
-    node.display(res)
+    const pernalityName = localStorage.getItem("pernalityName")
+    console.log('personality is', pernalityName)
+
+
+    // const res = await axios.get(`${serverUrl}/agent?agent=${personality}`)
+
+    const res = await axios.get(`${serverUrl}/agent_data`, {
+      params: { agent: pernalityName },
+    })
+   
+    node.display(res && res.data && res.data.agent)
     const agent = res.data.agent
     return {
       name: agent ?? res.data.name ?? res.data.personality ?? 'testestest',
