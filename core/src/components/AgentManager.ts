@@ -12,6 +12,7 @@ import {
   ThothWorkerInputs,
   ThothWorkerOutputs,
 } from '../../types'
+import { DropdownControl } from '../controls/DropdownControl'
 import { InputControl } from '../dataControls/InputControl'
 import { EngineContext } from '../engine'
 import { triggerSocket, anySocket } from '../sockets'
@@ -55,8 +56,21 @@ export class AgentManager extends ThothComponent<Promise<WorkerReturn>> {
       'Personality',
       anySocket
     )
-    const dataInput = new Rete.Input('trigger', 'Trigger', triggerSocket, true)
-    const dataOutput = new Rete.Output('trigger', 'Trigger', triggerSocket)
+    const value = node.data.text ? node.data.text : 'Select Value'
+
+    const inputDropdown = new DropdownControl({
+      editor: this.editor,
+      key: 'Personality',
+      value,
+    })
+
+    const dataInput = new Rete.Input('trigger', 'Trigger In', triggerSocket,true)
+    const dataOutput = new Rete.Output('trigger', 'Trigger Out', triggerSocket)
+    const outDialog = new Rete.Output('dialog', 'Dialog', anySocket)
+    const outMoral = new Rete.Output('morals and Ethics', 'Morals and Ethics', anySocket)
+    const outMonologue = new Rete.Output('monologue', 'Monologue', anySocket)
+    const outGreeting = new Rete.Output('greetings', 'Greetings []', anySocket)
+  
 
     const personality = new InputControl({
       dataKey: 'personality',
@@ -68,15 +82,15 @@ export class AgentManager extends ThothComponent<Promise<WorkerReturn>> {
 
     return (
       node
-        .addOutput(outName)
-        // .addOutput(outDialog)
-        .addOutput(outPersonality)
-        // .addOutput(outMoral)
-        // .addOutput(outMonologue)
-        // .addOutput(outFact)
-        // .addOutput(outGreeting)
-        .addInput(dataInput)
-        .addOutput(dataOutput)
+      .addOutput(outName)
+      .addOutput(outDialog)
+      .addOutput(outPersonality)
+      .addOutput(outMoral)
+      .addOutput(outMonologue)
+      .addOutput(outGreeting)
+      .addOutput(dataOutput)
+      .addControl(inputDropdown)
+      .addInput(dataInput)
     )
   }
 
@@ -92,9 +106,9 @@ export class AgentManager extends ThothComponent<Promise<WorkerReturn>> {
     console.log('personality is', personality)
 
     const res = await axios.get(`${serverUrl}/agent?agent=${personality}`)
-    console.log("res is", res)
+    console.log("res is 11", res)
+    node.display(res)
     const agent = res.data.agent
-
     return {
       name: agent ?? res.data.name ?? res.data.personality ?? 'testestest',
       agent: agent,
