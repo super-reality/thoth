@@ -48,6 +48,7 @@ export class InputDestructureComponent extends ThothComponent<InputReturn> {
     node.data.socketKey = node?.data?.socketKey || uuidv4()
 
     const inp = new Rete.Input('input', 'Input', anySocket)
+    const entityInput = new Rete.Input('input', 'Entity ID', anySocket)
     const out = new Rete.Output('output', 'output', anySocket)
     const speaker = new Rete.Output('speaker', 'speaker', anySocket)
     const agent = new Rete.Output('agent', 'agent', anySocket)
@@ -56,6 +57,7 @@ export class InputDestructureComponent extends ThothComponent<InputReturn> {
 
     return node
       .addInput(inp)
+      .addInput(entityInput)
       .addOutput(speaker)
       .addOutput(agent)
       .addOutput(client)

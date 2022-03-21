@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
+=======
+>>>>>>> sr/EET-46-chnages
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import axios from 'axios'
@@ -10,6 +13,7 @@ export async function handleInput(
   agent: string,
   client: string,
   channelId: string,
+<<<<<<< HEAD
   spell_handler: string,
   spell_version: string = 'latest'
 ) {
@@ -28,6 +32,27 @@ export async function handleInput(
       ChannelID: channelId,
     },
   })
+=======
+  spell_handler = 'default',
+  spell_version = 'latest'
+) {
+  const url = `http://localhost:8001/chains/${spell_handler}/${spell_version}`
+  console.log("url is", url)
+  const response = await axios.post(
+    `${url}`,
+    {
+      Input: {
+        Input: message,
+        Speaker: speaker,
+        Agent: agent,
+        Client: client,
+        ChannelID: channelId,
+      },
+    }
+  )
+  console.log('data:', response.data)
+  console.log('response:', response.data.outputs)
+>>>>>>> sr/EET-46-chnages
   let index = undefined
 
   for (const x in response.data.outputs) {
