@@ -1,4 +1,4 @@
-import { EngineContext } from '@latitudegames/thoth-core'
+import { EngineContext } from '@latitudegames/thoth-core/src/engine'
 import { useContext, createContext } from 'react'
 import { useDispatch } from 'react-redux'
 

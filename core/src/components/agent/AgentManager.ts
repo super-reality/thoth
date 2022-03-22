@@ -13,6 +13,7 @@ import {
   ThothWorkerInputs,
   ThothWorkerOutputs,
 } from '../../../types'
+import { DropdownControl } from '../../controls/DropdownControl'
 import { InputControl } from '../../dataControls/InputControl'
 import { EngineContext } from '../../engine'
 import { triggerSocket, anySocket } from '../../sockets'
@@ -36,7 +37,7 @@ export class AgentManager extends ThothComponent<Promise<WorkerReturn>> {
 
     this.task = {
       outputs: {
-        // output: 'output',
+        output: 'output',
         trigger: 'option',
         name: 'name',
         personality: 'personality',
