@@ -119,6 +119,7 @@ const executeHandler = async (ctx: Koa.Context) => {
   const agent = ctx.request.body.agent
   const id = ctx.request.body.id
   const msg = database.instance.getRandomGreeting(agent)
+  const spell_handler = ctx.request.body.handler ?? 'default'
   if (message.includes('/become')) {
     let out: any = {}
     if (!(await database.instance.getAgentExists(agent))) {
@@ -140,7 +141,14 @@ const executeHandler = async (ctx: Koa.Context) => {
     )
     return (ctx.body = out)
   }
-  ctx.body = await handleInput(message, speaker, agent, 'web', id)
+  ctx.body = await handleInput(
+    message,
+    speaker,
+    agent,
+    'web',
+    id,
+    spell_handler
+  )
 }
 
 const getPromptsHandler = async (ctx: Koa.Context) => {
@@ -572,13 +580,12 @@ const textCompletion = async (ctx: Koa.Context) => {
     stop = ['"""', `${sender}:`, '\n']
   } else {
     for (let i = 0; i < stop.length; i++) {
-      if (stop[i] === '$speaker:') {
+      if (stop[i] === '#speaker:') {
         stop[i] = `${sender}:`
       }
     }
   }
 
-  console.log('textCompletion for prompt:', prompt)
   const { success, choice } = await makeCompletion(modelName, {
     prompt: prompt,
     temperature: temperature,
@@ -661,9 +668,8 @@ const requestInformationAboutVideo = async (
   question: string
 ): Promise<string> => {
   const videoInformation = ``
-  const prompt = `Information: ${videoInformation} \n ${sender}: ${
-    question.trim().endsWith('?') ? question.trim() : question.trim() + '?'
-  }\n${agent}:`
+  const prompt = `Information: ${videoInformation} \n ${sender}: ${question.trim().endsWith('?') ? question.trim() : question.trim() + '?'
+    }\n${agent}:`
 
   const modelName = 'davinci'
   const temperature = 0.9
@@ -714,6 +720,28 @@ const chatAgent = async (ctx: Koa.Context) => {
   }
 
   return (ctx.body = out)
+}
+
+const getEntitiesInfo = async (ctx: Koa.Context) => {
+  const id = (ctx.request.query.id as string)
+    ? parseInt(ctx.request.query.id as string)
+    : -1
+
+  try {
+    let data = await database.instance.getAgentInstances()
+    let info = undefined
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].id === id) {
+        info = data[i]
+      }
+    }
+
+    return (ctx.body = info)
+  } catch (e) {
+    console.log('getAgentInstancesHandler:', e)
+    ctx.status = 500
+    return (ctx.body = { error: 'internal error' })
+  }
 }
 
 export const agents: Route[] = [
@@ -863,5 +891,10 @@ export const agents: Route[] = [
     path: '/chat_agent',
     access: noAuth,
     post: chatAgent,
+  },
+  {
+    path: '/entities_info',
+    access: noAuth,
+    get: getEntitiesInfo,
   },
 ]

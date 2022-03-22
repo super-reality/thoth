@@ -1,6 +1,3 @@
-// @ts-nocheck
-// @ts-nocheck
-
 import { EngineContext } from '@latitudegames/thoth-core'
 import { useContext, createContext } from 'react'
 import { useDispatch } from 'react-redux'
@@ -16,9 +13,6 @@ import { invokeInference } from '../../utils/huggingfaceHelper'
 import { useDB } from '../../contexts/DatabaseProvider'
 import { usePubSub } from '../../contexts/PubSubProvider'
 import { useFetchFromImageCacheMutation } from '@/state/api/visualGenerationsApi'
-import { ModelsType } from '../../../types'
-import { ThothWorkerInputs } from '@latitudegames/thoth-core/types'
-
 import { ModelsType } from '../../types'
 /*
 Some notes here.  The new rete provider, not to be confused with the old rete provider renamed to the editor provider, is designed to serve as the single source of truth for interfacing with the rete internal system.  This unified interface will also allow us to replicate the same API in the server, where rete expects certain functions to exist but doesn't care what is behind these functions so long as they work.
@@ -39,11 +33,6 @@ export interface ThothInterfaceContext extends EngineContext {
   getCurrentGameState: () => Record<string, unknown>
   updateCurrentGameState: (update) => void
   readFromImageCache: (caption, cacheTag, topK) => Promise<Record<string, any>>
-  processCode: (
-    code: unknown,
-    inputs: ThothWorkerInputs,
-    data: Record<string, any>
-  ) => void
 }
 
 const Context = createContext<ThothInterfaceContext>(undefined!)
@@ -145,24 +134,7 @@ const ThothInterfaceProvider = ({ children, tab }) => {
       cacheTag,
       topK,
     })
-    if ('error' in result) return {}
-    return { outputs: [result.data] }
-  }
-
-  const processCode = (code, inputs, data) => {
-    console.log("Processing code from ", inputs, code, data)
-    const flattenedInputs = Object.entries(inputs as ThothWorkerInputs).reduce(
-      (acc, [key, value]) => {
-        acc[key as string] = value[0]
-        return acc
-      },
-      {} as Record<string, any>
-    )
-    // eslint-disable-next-line no-new-func
-    return Function('"use strict";return (' + code + ')')()(
-      flattenedInputs,
-      data
-    )
+    return result
   }
 
   const clearTextEditor = () => {
@@ -171,7 +143,7 @@ const ThothInterfaceProvider = ({ children, tab }) => {
 
   const getCurrentGameState = () => {
     const currentGameState = selectGameStateBySpellId(
-      store.getState().gameState,
+      // store.getState().gameState,
       tab.spell
     )
     return currentGameState?.state ?? {}
@@ -203,7 +175,6 @@ const ThothInterfaceProvider = ({ children, tab }) => {
     readFromImageCache,
     getCurrentGameState,
     updateCurrentGameState,
-    processCode,
     ...models.modules,
 
     // going to need to manuall create theses

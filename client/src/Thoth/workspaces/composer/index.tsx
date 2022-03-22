@@ -1,8 +1,6 @@
-// @ts-nocheck
+import { useEffect, useRef } from 'react'
 
-import { useEffect } from 'react'
-
-import { store } from '@/state/store'
+// import { store } from '@/state/store'
 import { useEditor } from '@thoth/contexts/EditorProvider'
 import { Layout } from '@thoth/contexts/LayoutProvider'
 import { useModule } from '@/contexts/ModuleProvider'
@@ -17,15 +15,12 @@ import EventHandler from '@thoth/components/EventHandler'
 import Inspector from '@thoth/windows/InspectorWindow'
 import Playtest from '@thoth/windows/PlaytestWindow'
 import StateManager from '@thoth/windows/StateManagerWindow'
-import AgentManager from '@thoth/windows/AgentManagerWindow'
-import EntManager from '@thoth/windows/EntManagerWindow'
-import ConfigManager from '@thoth/windows/ConfigManagerWindow'
 import TextEditor from '@thoth/windows/TextEditorWindow'
 import DebugConsole from '@thoth/windows/DebugConsole'
-import SearchCorpus from '../../windows/SearchCorpusWindow'
-import DebugConsole from '@thoth/windows/DebugConsole'
+import { Spell } from '../../../state/api/spells'
 
 const Workspace = ({ tab, tabs, pubSub }) => {
+  const spellRef = useRef<Spell>()
   const [loadSpell, { data: spellData }] = useLazyGetSpellQuery()
   const [saveSpell] = useSaveSpellMutation()
   const { saveModule } = useModule()
@@ -38,7 +33,7 @@ const Workspace = ({ tab, tabs, pubSub }) => {
       'save nodecreated noderemoved connectioncreated connectionremoved nodetranslated',
       debounce(() => {
         if (tab.type === 'spell') {
-          saveSpell({ ...spellData, chain: editor.toJSON() })
+          saveSpell({ ...spellRef.current, chain: editor.toJSON() })
         }
         if (tab.type === 'module') {
           saveModule(tab.module, { data: editor.toJSON() }, false)
@@ -49,7 +44,7 @@ const Workspace = ({ tab, tabs, pubSub }) => {
             .forEach(filteredTab => {
               if (filteredTab.spell) {
                 const spell = selectSpellById(
-                  store.getState(),
+                  // store.getState(),
                   filteredTab.spell
                 )
                 if (
@@ -63,6 +58,11 @@ const Workspace = ({ tab, tabs, pubSub }) => {
       }, 500)
     )
   }, [editor])
+
+  useEffect(() => {
+    if (!spellData) return
+    spellRef.current = spellData
+  }, [spellData])
 
   useEffect(() => {
     if (!tab || !tab.spell) return
@@ -79,14 +79,6 @@ const Workspace = ({ tab, tabs, pubSub }) => {
       switch (component) {
         case 'stateManager':
           return <StateManager {...props} />
-        case 'agentManager':
-          return <AgentManager />
-        case 'searchCorpus':
-          return <SearchCorpus />
-        case 'configManager':
-          return <ConfigManager />
-        case 'entManager':
-          return <EntManager />
         case 'playtest':
           return <Playtest {...props} />
         case 'inspector':

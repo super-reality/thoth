@@ -1,3 +1,6 @@
+/* eslint-disable no-async-promise-executor */
+/* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable no-console */
 /* eslint-disable require-await */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -14,14 +17,15 @@ import { EngineContext } from '../../engine'
 import { triggerSocket, stringSocket } from '../../sockets'
 import { ThothComponent } from '../../thoth-component'
 
-const info = "Get Agents Facts returns the select agent's facts"
+const info = 'Returns the input string as voice'
 
-type InputReturn = {
-  output: unknown
+type WorkerReturn = {
+  output: string
 }
-export class GetAgentFacts extends ThothComponent<Promise<InputReturn>> {
+
+export class TextToSpeech extends ThothComponent<Promise<WorkerReturn>> {
   constructor() {
-    super('Get Agents Facts')
+    super('Text to Speech')
 
     this.task = {
       outputs: {
@@ -30,24 +34,24 @@ export class GetAgentFacts extends ThothComponent<Promise<InputReturn>> {
       },
     }
 
-    this.category = 'Agents'
+    this.category = 'AI/ML'
     this.display = true
     this.info = info
   }
 
   builder(node: ThothNode) {
-    const agentInput = new Rete.Input('agent', 'Agent', stringSocket)
-    const inp = new Rete.Input('string', 'Input String', stringSocket)
-    const factsOut = new Rete.Output('output', 'Facts', stringSocket)
+    const inp = new Rete.Input('string', 'Text', stringSocket)
+    const characterInp = new Rete.Input('character', 'Character', stringSocket)
     const dataInput = new Rete.Input('trigger', 'Trigger', triggerSocket, true)
     const dataOutput = new Rete.Output('trigger', 'Trigger', triggerSocket)
+    const outp = new Rete.Output('Voice', 'String', stringSocket)
 
     return node
       .addInput(inp)
       .addInput(dataInput)
-      .addInput(agentInput)
+      .addInput(characterInp)
       .addOutput(dataOutput)
-      .addOutput(factsOut)
+      .addOutput(outp)
   }
 
   async worker(
@@ -56,19 +60,21 @@ export class GetAgentFacts extends ThothComponent<Promise<InputReturn>> {
     outputs: ThothWorkerOutputs,
     { silent, thoth }: { silent: boolean; thoth: EngineContext }
   ) {
-    const agent = inputs['agent'][0] as string
+    const action = inputs['string'][0]
+    const character = inputs['character']?.[0] as string
 
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/agent_facts`,
+    const url = await axios.get(
+      `${process.env.REACT_APP_API_ROOT_URL}/speech_to_text`,
       {
         params: {
-          agent: agent,
+          text: action,
+          character: character,
         },
       }
     )
 
     return {
-      output: response.data.facts,
+      output: (url.data as any).path as string,
     }
   }
 }
