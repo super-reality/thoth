@@ -136,7 +136,7 @@ export class world extends gameObject {
   }
 
   objectExists(id: number) {
-    return this.objects[id] !== undefined && this.objects[id] === null
+    return this.objects[id] !== undefined && this.objects[id] !== null
   }
 
   generateId(): number {

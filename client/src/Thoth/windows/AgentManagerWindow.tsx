@@ -23,8 +23,8 @@ const AgentManager = () => {
   const {
     handleSubmit,
   } = useForm()
-  let name = localStorage.getItem("agentName")
   const createNew = async () => {
+    let name = localStorage.getItem("agentName")
     const agent = !name ? 'New Agent' : name
     await getAgents()
     await update(agent as any)
@@ -137,8 +137,8 @@ const AgentManager = () => {
   }
 
   const createAgent = data => {
-    onSubmit()
     localStorage.setItem("agentName", data && data.name)
+    onSubmit()
     enqueueSnackbar('Agent Created', { variant: 'success' })
   }
 
@@ -236,8 +236,8 @@ const AgentManager = () => {
                 >
                   {(agents as any)?.length > 0 &&
                     (agents as any)?.map((agent, idx) => (
-                      <option value={agent.name} key={idx}>
-                        {agent.name}
+                      <option value={agent.agent} key={idx}>
+                        {agent.agent}
                       </option>
                     ))
                   }
