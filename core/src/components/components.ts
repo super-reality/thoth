@@ -10,6 +10,7 @@ import { GetAgentData } from './agent/GetAgentData'
 import { GetAgentPersonality } from './agent/GetAgentPersonality'
 import { InputDestructureComponent } from './agent/InputDestructure'
 import { Request } from './agent/Request'
+import { SearchYoutube } from './agent/SearchYouTube'
 import { InputComponent } from './io/Input'
 import { ModuleComponent } from './io/Module'
 import { Output } from './io/Output'
@@ -84,6 +85,7 @@ export const components = {
   textToSpeech: () => new TextToSpeech(),
   agentTextCompletion: () => new AgentTextCompletion(),
   getAgentPersonality: () => new GetAgentPersonality(),
+  searchYouTube: () => new SearchYoutube(),
   keywordExtractor: () => new KeywordExtractor(),
   namedEntityRecognition: () => new NamedEntityRecognition(),
   createOrGetAgent: () => new CreateOrGetAgent(),
