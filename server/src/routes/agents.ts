@@ -85,7 +85,7 @@ const executeHandler = async (ctx: Koa.Context) => {
     }
 
     out.defaultGreeting = await msg
-    database.instance.setEvents(
+    database.instance.createEvent(
       'conversation',
       agent,
       'web',
@@ -182,50 +182,15 @@ const deleteAgentInstanceHandler = async (ctx: Koa.Context) => {
   ctx.body = await database.instance.deleteAgentInstance(id)
 }
 
-const setFacts = async (ctx: Koa.Context) => {
-  const agent = ctx.request.body.agent
-  const speaker = ctx.request.body.speaker
-  const client = ctx.request.body.client
-  const channel = ctx.request.body.channel
-  const text = ctx.request.body.facts as string
-
-  console.log("Request body was", ctx.request.body)
-
-  await database.instance.setEvents('facts', agent, client, channel, speaker, text)
-
-  return (ctx.body = 'ok')
-}
-
-
-const getFacts = async (ctx: Koa.Context) => {
+const getEvent = async (ctx: Koa.Context) => {
+  const type = ctx.request.query.type as string
   const agent = ctx.request.query.agent
   const speaker = ctx.request.query.speaker
   const client = ctx.request.query.client
   const channel = ctx.request.query.channel
   const maxCount = parseInt(ctx.request.query.maxCount as string)
   const conversation = await database.instance.getEvents(
-    'facts',
-    agent,
-    speaker,
-    client,
-    channel,
-    true,
-    maxCount
-  )
-
-  console.log('facts, query:', ctx.request.query, 'conv:', conversation)
-
-  return (ctx.body = conversation)
-}
-
-const getConversation = async (ctx: Koa.Context) => {
-  const agent = ctx.request.query.agent
-  const speaker = ctx.request.query.speaker
-  const client = ctx.request.query.client
-  const channel = ctx.request.query.channel
-  const maxCount = parseInt(ctx.request.query.maxCount as string)
-  const conversation = await database.instance.getEvents(
-    'conversation',
+    type,
     agent,
     speaker,
     client,
@@ -239,20 +204,21 @@ const getConversation = async (ctx: Koa.Context) => {
   return (ctx.body = conversation)
 }
 
-const setConversation = async (ctx: Koa.Context) => {
+const createEvent = async (ctx: Koa.Context) => {
   const agent = ctx.request.body.agent
   const speaker = ctx.request.body.speaker
   const client = ctx.request.body.client
   const channel = ctx.request.body.channel
-  const conversation = ctx.request.body.conv
+  const text = ctx.request.body.text
+  const type = ctx.request.body.type
 
-  await database.instance.setEvents(
-    'conversation',
+  await database.instance.createEvent(
+    type,
     agent,
     client,
     channel,
     speaker,
-    conversation
+    text
   )
 
   return (ctx.body = 'ok')
@@ -664,16 +630,10 @@ export const agents: Route[] = [
     delete: deleteAgentInstanceHandler,
   },
   {
-    path: '/facts',
+    path: '/event',
     access: noAuth,
-    get: getFacts,
-    post: setFacts,
-  },
-  {
-    path: '/conversation',
-    access: noAuth,
-    get: getConversation,
-    post: setConversation,
+    get: getEvent,
+    post: createEvent,
   },
   {
     path: '/relationship_matrix',
