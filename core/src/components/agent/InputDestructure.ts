@@ -69,12 +69,14 @@ export class InputDestructureComponent extends ThothComponent<
 
     return node
       .addInput(inp)
+      .addInput(dataInput)
       .addOutput(speaker)
       .addOutput(agent)
       .addOutput(client)
       .addOutput(channelId)
       .addOutput(entity)
       .addOutput(out)
+      .addOutput(dataOutput)
   }
 
   // eslint-disable-next-line require-await

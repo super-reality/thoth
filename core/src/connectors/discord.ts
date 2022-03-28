@@ -426,7 +426,7 @@ export class discord_client {
     if (author.bot) return
 
     //checks if the message contains a direct mention to the bot, or if it is a DM, or if it mentions someone else
-    const botMention = `<@!${client.user}>`
+    const botMention = `<@!${client.user.id}>`
     const isDM = channel.type === channelTypes['dm']
     const isMention =
       (channel.type === channelTypes['text'] && mentions.has(client.user)) ||
