@@ -44,14 +44,14 @@ export class twitter_client {
     this.agent = agent
     this.settings = settings
 
-    const bearerToken = getSetting(settings, 'twitterBearerToken')
-    const twitterUser = getSetting(settings, 'twitterID')
-    const twitterAppToken = getSetting(settings, 'twitterAppToken')
-    const twitterAppTokenSecret = getSetting(settings, 'twitterAppTokenSecret')
-    const twitterAccessToken = getSetting(settings, 'tiwtterAccessToken')
+    const bearerToken = getSetting(settings, 'twitter_token')
+    const twitterUser = getSetting(settings, 'twitter_id')
+    const twitterAppToken = getSetting(settings, 'twitter_app_token')
+    const twitterAppTokenSecret = getSetting(settings, 'twitter_app_token_secret')
+    const twitterAccessToken = getSetting(settings, 'twitter_access_token')
     const twitterAccessTokenSecret = getSetting(
       settings,
-      'twitterAccessTokenSecret'
+      'twitter_access_token_secret'
     )
     const regex = new RegExp('', 'ig')
     const regex2 = new RegExp('botNameRegex', 'ig')
