@@ -19,6 +19,7 @@ import {
   classifyText,
 } from '@latitudegames/thoth-core/src/utils/textClassifier'
 import keyword_extractor from 'keyword-extractor'
+import * as yt from 'youtube-search-without-api-key'
 
 config({ path: '.env' })
 const searchEngine = 'davinci'
@@ -317,6 +318,21 @@ export async function initSearchCorpus(ignoreDotEnv: boolean) {
       return (ctx.body = 'internal error')
     }
     return (ctx.body = 'ok')
+  })
+
+  router.get('/yt-search', async function (ctx: Koa.Context) {
+    const query = ctx.query.query as string
+    let searches = []
+    try {
+      searches = await yt.search(query)
+    } catch (e) {
+      console.log(e)
+      return (ctx.body = 'internal error')
+    }
+    return (ctx.body = {
+      result: searches[0],
+      hits: searches.length
+    })
   })
 
   app.use(router.routes()).use(router.allowedMethods())
