@@ -59,10 +59,10 @@ const EntityWindow = ({ id, updateCallback }) => {
   const [twitter_bot_name, setTwitterBotName] = useState('')
   const [twitter_bot_name_regex, setTwitterBotNameRegex] = useState('')
 
-  // const [twilio_client_enable, setTwilioClientEnable] = useState(false)
-  // const [twilio_sid, setTwilioSid] = useState('')
-  // const [twilio_auth_token, setTwilioAuthToken] = useState('')
-  // const [twilio_phone_number, setTwilioPhoneNumber] = useState('')
+  const [twilio_client_enable, setTwilioClientEnable] = useState(false)
+  const [twilio_sid, setTwilioSid] = useState('')
+  const [twilio_auth_token, setTwilioAuthToken] = useState('')
+  const [twilio_phone_number, setTwilioPhoneNumber] = useState('')
 
   const [spellList, setSpellList] = useState('')
   useEffect(() => {
@@ -105,10 +105,10 @@ const EntityWindow = ({ id, updateCallback }) => {
         setTwitterBotName(res.data.twitter_bot_name)
         setTwitterBotNameRegex(res.data.twitter_bot_name_regex)
 
-        // setTwilioClientEnable(res.data.twilio_client_enable === true)
-        // setTwilioSid(res.data.twilio_sid)
-        // setTwilioAuthToken(res.data.twilio_auth_token)
-        // setTwilioPhoneNumber(res.data.twilio_phone_number)
+        setTwilioClientEnable(res.data.twilio_client_enable === true)
+        setTwilioSid(res.data.twilio_sid)
+        setTwilioAuthToken(res.data.twilio_auth_token)
+        setTwilioPhoneNumber(res.data.twilio_phone_number)
 
         setLoaded(true)
       })()
@@ -165,10 +165,10 @@ const EntityWindow = ({ id, updateCallback }) => {
       twitter_access_token_secret,
       twitter_bot_name,
       twitter_bot_name_regex,
-      // twilio_client_enable,
-      // twilio_sid,
-      // twilio_auth_token,
-      // twilio_phone_number
+      twilio_client_enable,
+      twilio_sid,
+      twilio_auth_token,
+      twilio_phone_number
     }
     axios
       .post(`${process.env.REACT_APP_API_ROOT_URL}/entity`, {
@@ -213,10 +213,10 @@ const EntityWindow = ({ id, updateCallback }) => {
         setTwitterBotName(responseData.twitter_bot_name)
         setTwitterBotNameRegex(responseData.twitter_bot_name_regex)
 
-        // setTwilioClientEnable(responseData.twilio_client_enable)
-        // setTwilioSid(responseData.twilio_sid)
-        // setTwilioAuthToken(responseData.twilio_auth_token)
-        // setTwilioPhoneNumber(responseData.twilio_phone_number)
+        setTwilioClientEnable(responseData.twilio_client_enable)
+        setTwilioSid(responseData.twilio_sid)
+        setTwilioAuthToken(responseData.twilio_auth_token)
+        setTwilioPhoneNumber(responseData.twilio_phone_number)
 
         updateCallback()
       })
@@ -596,7 +596,7 @@ const EntityWindow = ({ id, updateCallback }) => {
               </>
             )
           }
-          {/* <div className="form-item">
+          <div className="form-item">
             <span className="form-item-label">Twilio Client Enabled</span>
             <input
               type="checkbox"
@@ -606,9 +606,9 @@ const EntityWindow = ({ id, updateCallback }) => {
                 setTwilioClientEnable(e.target.checked)
               }}
             />
-          </div> */}
+          </div>
 
-          {/* {twilio_client_enable &&
+          {twilio_client_enable &&
             (
               <>
                 <div className="form-item">
@@ -643,7 +643,7 @@ const EntityWindow = ({ id, updateCallback }) => {
                 </div>
               </>
             )
-          } */}
+          }
 
         </>
       )}

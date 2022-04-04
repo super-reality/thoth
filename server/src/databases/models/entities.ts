@@ -35,6 +35,10 @@ export interface entitiesAttributes {
   twitter_access_token_secret?: string
   twitter_bot_name?: string
   twitter_bot_name_regex?: string
+  twilio_client_enable?: string
+  twilio_sid?: string
+  twilio_auth_token?: string
+  twilio_phone_number?: string
 }
 
 export type entitiesPk = 'id'
@@ -65,6 +69,10 @@ export type entitiesOptionalAttributes =
   | 'twitter_access_token_secret'
   | 'twitter_bot_name'
   | 'twitter_bot_name_regex'
+  | 'twilio_client_enable'
+  | 'twilio_sid'
+  | 'twilio_auth_token'
+  | 'twilio_phone_number'
   | 'enabled'
   | 'updated_at'
 export type entitiesCreationAttributes = Optional<
@@ -107,6 +115,10 @@ export class entities
   twitter_access_token_secret?: string
   twitter_bot_name?: string
   twitter_bot_name_regex?: string
+  twilio_client_enable?: string
+  twilio_sid?: string
+  twilio_auth_token?: string
+  twilio_phone_number?: string
 
   static initModel(sequelize: Sequelize.Sequelize): typeof entities {
     return entities.init(
@@ -241,6 +253,22 @@ export class entities
           type: DataTypes.TEXT,
           allowNull: true,
         },
+        twilio_client_enable: {
+          type: DataTypes.BOOLEAN,
+          allowNull: true,
+        },
+        twilio_sid: {
+          type: DataTypes.TEXT,
+          allowNull: true,
+        },
+        twilio_auth_token: {
+          type: DataTypes.TEXT,
+          allowNull: true,
+        },
+        twilio_phone_number: {
+          type: DataTypes.TEXT,
+          allowNull: true,
+        }
       },
       {
         sequelize,
