@@ -102,9 +102,9 @@ export class twilio_client {
   createTwilioClient = async (app: Koa, router: Router, settings: any) => {
     this.settings = settings
 
-    const accountSid = settings['twilioAccountSID']
-    const authToken = settings['twilioAuthToken']
-    const twilioNumber = settings['twilioPhoneNumber']
+    const accountSid = settings['twilio_sid']
+    const authToken = settings['twilio_auth_token']
+    const twilioNumber = settings['twilio_phone_number']
 
     if (!accountSid || !authToken || !twilioNumber)
       return console.warn('No API token for Twilio bot, skipping')
@@ -123,7 +123,7 @@ export class twilio_client {
     console.log('sending sms: ' + body)
     this.client.messages
       .create({
-        from: getSetting(this.settings, 'twilioPhoneNumber'),
+        from: getSetting(this.settings, 'twilio_phone_number'),
         to: toNumber,
         body: body,
       })
