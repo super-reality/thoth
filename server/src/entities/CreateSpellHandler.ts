@@ -14,18 +14,8 @@ import { ModuleType } from '@latitudegames/thoth-core/types'
 export const CreateSpellHandler = async (props: {
   spell: any
   version: string
-  client_name: string
 }) => {
   // TODO: create a proper engine interface with the proper methods types on it.
-  console.log(
-    'Creating Spell Handler, for client:',
-    props.client_name,
-    'spell:',
-    props.spell,
-    'version:',
-    props.version
-  )
-
   const engine = initSharedEngine({
     name: 'demo@0.1.0',
     components: getComponents(),
