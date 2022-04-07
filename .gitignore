@@ -12,4 +12,3 @@ build
 core/src/plugins/areaPlugin/style.css.d.ts
 .idea
 server/.env
-server/google_credentials.json
