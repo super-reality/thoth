@@ -38,6 +38,7 @@
     "lerna": "^4.0.0"
   },
   "dependencies": {
+    "@discordjs/voice": "^0.8.0",
     "@plotdb/json0": "^0.0.5",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
