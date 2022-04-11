@@ -23,9 +23,9 @@ type WorkerReturn = {
   output: string
 }
 
-export class TextToSpeech extends ThothComponent<Promise<WorkerReturn>> {
+export class VoiceOuput extends ThothComponent<Promise<WorkerReturn>> {
   constructor() {
-    super('Text to Speech')
+    super('Voice Output')
 
     this.task = {
       outputs: {
@@ -64,7 +64,7 @@ export class TextToSpeech extends ThothComponent<Promise<WorkerReturn>> {
     const character = inputs['character']?.[0] as string
     console.log('action', action)
     console.log('character', character)
-
+    console.log('Url', `${process.env.REACT_APP_API_ROOT_URL}/speech_to_text`)
     const url = await axios.get(
       `${process.env.REACT_APP_API_ROOT_URL}/speech_to_text`,
       {
@@ -74,10 +74,10 @@ export class TextToSpeech extends ThothComponent<Promise<WorkerReturn>> {
         },
       }
     )
-    console.log((url.data as any).path as string)
+    console.log("URL:", url.data)
     node.display(action)
     return {
-      output: (url.data as any).path as string
+      output: url.data
     }
   }
 }

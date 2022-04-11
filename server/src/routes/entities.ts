@@ -181,20 +181,20 @@ const createEvent = async (ctx: Koa.Context) => {
 const getSpeechToText = async (ctx: Koa.Context) => {
   const text = ctx.request.query.text
   const character = ctx.request.query.character
-  const cache = cacheManager.instance.get(
-    'global',
-    'speech_' + character + ': ' + text
-  )
-  if (cache !== undefined && cache !== null) {
-    return (ctx.body = cache)
-  }
-
+  // const cache = cacheManager.instance.get(
+  //   'global',
+  //   'speech_' + character + ': ' + text
+  // )
+  // if (cache !== undefined && cache !== null) {
+  //   return (ctx.body = cache)
+  // }
   const url = await getAudioUrl(
     process.env.UBER_DUCK_KEY as string,
     process.env.UBER_DUCK_SECRET_KEY as string,
     character as string,
     text as string
   )
+
   cacheManager.instance.set('global', 'speech_' + character + ': ' + text, url)
 
   return (ctx.body = url)
@@ -203,12 +203,12 @@ const getSpeechToText = async (ctx: Koa.Context) => {
 function getAudioUrl(
   key: string,
   secretKey: string,
-  character: string,
+  carachter: string,
   text: string
 ) {
-  if (character === undefined) throw new Error('Define the character voice.')
+  if (carachter === undefined) throw new Error('Define the carachter voice.')
   if (key === undefined) throw new Error('Define the key you got from uberduck')
-  if (character === undefined)
+  if (carachter === undefined)
     throw new Error('Define the secret key u got from uberduck.')
 
   return new Promise(async (resolve, reject) => {
@@ -216,7 +216,7 @@ function getAudioUrl(
       {
         url: 'https://api.uberduck.ai/speak',
         method: 'POST',
-        body: `{"speech": "${text}","voice": "${character}"}`,
+        body: `{"speech": "${text}","voice": "${carachter}"}`,
         auth: {
           user: key,
           pass: secretKey,
@@ -225,7 +225,7 @@ function getAudioUrl(
       async (erro: any, response: any, body: any) => {
         if (erro)
           throw new Error(
-            'Error when making request, verify if yours params (key, secretKey, character) are correct.'
+            'Error when making request, verify if yours params (key, secretKey, carachter) are correct.'
           )
         const audioResponse: string =
           'https://api.uberduck.ai/speak-status?uuid=' + JSON.parse(body).uuid
@@ -437,9 +437,8 @@ const requestInformationAboutVideo = async (
   question: string
 ): Promise<string> => {
   const videoInformation = ``
-  const prompt = `Information: ${videoInformation} \n ${sender}: ${
-    question.trim().endsWith('?') ? question.trim() : question.trim() + '?'
-  }\n${agent}:`
+  const prompt = `Information: ${videoInformation} \n ${sender}: ${question.trim().endsWith('?') ? question.trim() : question.trim() + '?'
+    }\n${agent}:`
 
   const modelName = 'davinci'
   const temperature = 0.9

@@ -36,6 +36,7 @@ import { SentenceMatcher } from './ml/SentenceMatcher'
 import { SummarizeFacts } from './ml/SummarizeFacts'
 import { TenseTransformer } from './ml/TenseTransformer'
 import { TextToSpeech } from './ml/TextToSpeech'
+import { VoiceOuput } from './ml/VoiceOutput'
 import { TimeDetectorComponent } from './ml/TimeDetector'
 import { DocumentDelete } from './search/DocumentDelete'
 import { DocumentGet } from './search/DocumentGet'
@@ -79,6 +80,7 @@ export const components = {
   echo: () => new Echo(),
   SummarizeFacts: () => new SummarizeFacts(),
   textToSpeech: () => new TextToSpeech(),
+  voiceOutput: () => new VoiceOuput(),
   agentTextCompletion: () => new AgentTextCompletion(),
   keywordExtractor: () => new KeywordExtractor(),
   namedEntityRecognition: () => new NamedEntityRecognition(),
