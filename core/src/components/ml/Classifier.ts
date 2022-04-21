@@ -82,7 +82,7 @@ export class Classifier extends ThothComponent<Promise<InputReturn>> {
       candidate_labels: labelData,
     }
 
-    const _parameters = { candidate_labels: parameters }
+    // const _parameters = { candidate_labels: parameters }
 
     const resp = await axios.post(
       `${process.env.REACT_APP_API_URL ??
@@ -92,7 +92,7 @@ export class Classifier extends ThothComponent<Promise<InputReturn>> {
       {
         inputs: inputData as string,
         model: 'facebook/bart-large-mnli',
-        parameters: _parameters,
+        parameters: parameters,
         options: undefined,
       }
     )

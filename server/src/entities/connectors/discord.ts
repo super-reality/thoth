@@ -13,11 +13,17 @@
 import Discord, { Intents } from 'discord.js'
 import emoji from 'emoji-dictionary'
 import emojiRegex from 'emoji-regex'
-import { EventEmitter } from 'events'
-
+import {
+  joinVoiceChannel,
+  createAudioPlayer,
+  createAudioResource,
+  StreamType,
+} from '@discordjs/voice'
+import fs from 'fs'
 // import { classifyText } from '../utils/textClassifier'
 import { database } from '../../database'
 import { getRandomEmptyResponse, startsWithCapital } from './utils'
+import { initTextToSpeech, tts } from '../../systems/googleTextToSpeech'
 
 function log(...s: (string | boolean)[]) {
   console.log(...s)
@@ -638,7 +644,7 @@ export class discord_client {
     //if the message contains join word, it makes the bot to try to join a voice channel and listen to the users
     if (content.startsWith('!ping')) {
       this.sentMessage(author.id)
-      const mention = `<@!${client.user.id}>`
+      const mention = `<@${client.user.id}>`
       if (
         content.startsWith('!ping join') ||
         content.startsWith('!ping ' + mention + ' join')
@@ -658,22 +664,34 @@ export class discord_client {
                 channel.type === channelTypes['voice'] &&
                 channel.name === channelName
               ) {
-                const connection = await channel.join()
-                const receiver = connection.receiver
-                const userStream = receiver.createStream(author, {
-                  mode: 'pcm',
-                  end: 'silence',
+                const connection = await joinVoiceChannel({
+                  channelId: channel.id,
+                  guildId: channel.guild.id,
+                  selfDeaf: false,
+                  selfMute: false,
+                  adapterCreator: channel.guild.voiceAdapterCreator
                 })
+                const receiver = connection.receiver
+                const userStream = receiver.subscribe(author.id)
+                console.log('receiver speaking :::: ', receiver.speaking);
+                
+                // const userStream = receiver.createStream(author, {
+                //   mode: 'pcm',
+                //   end: 'silence',
+                // })
                 const writeStream = fs.createWriteStream('recording.pcm', {})
 
                 const buffer = []
                 userStream.on('data', (chunk: string | boolean) => {
+                  console.log('------on data------');
                   buffer.push(chunk)
                   log(chunk)
                   userStream.pipe(writeStream)
                 })
                 writeStream.on('pipe', log)
-                userStream.on('finish', () => {
+                userStream.on('end', () => {
+                  console.log('------on finish------');
+                  
                   channel.leave()
                   /*const cmd = 'ffmpeg -i recording.pcm recording.wav';
                               exec(cmd, (error, stdout, stderr) => {
@@ -733,6 +751,26 @@ export class discord_client {
       message.channel.id,
       this.entity
     )
+    
+    await message.guild.channels.cache.map(async (channel) => {
+      if(channel.type === channelTypes['voice'] && channel.members.has(this.client.user.id)) {
+        const connection = await joinVoiceChannel({
+          channelId: channel.id,
+          guildId: channel.guild.id,
+          selfDeaf: false,
+          selfMute: false,
+          adapterCreator: channel.guild.voiceAdapterCreator
+        })
+        const audioPlayer = createAudioPlayer()
+        connection.subscribe(audioPlayer)
+        await initTextToSpeech()
+        const url = await tts(response)
+        const audioResource = createAudioResource(url, { inputType: StreamType.Arbitrary })
+        audioPlayer.play(audioResource)
+        return
+      }
+    })
+    
     this.handlePingSoloAgent(message.channel.id, message.id, response, false)
   }
 
@@ -1695,6 +1733,7 @@ export class discord_client {
         Intents.FLAGS.GUILD_PRESENCES,
         Intents.FLAGS.GUILD_MEMBERS,
         Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_VOICE_STATES
       ],
     })
     this.bot_name = discord_bot_name
@@ -1745,6 +1784,11 @@ export class discord_client {
     })
     this.client.on('messageReactionAdd', async (reaction: any, user: any) => {
       this.handleMessageReactionAdd(reaction, user)
+    })
+
+    this.client.on('voiceStateUpdate', (oldState, newState) => {
+      console.log('voiceState old :::: ', oldState);
+      console.log('voiceState new :::: ', newState);
     })
 
     // this.client.commands = new Discord.Collection()
