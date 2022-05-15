@@ -1,4 +1,4 @@
-import axios from 'axios'
+// import axios from 'axios'
 import Rete from 'rete'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -16,7 +16,7 @@ import { ThothComponent } from '../../thoth-component'
 const info = `The output component will pass values out from your spell.  You can have multiple outputs in a spell and all output values will be collected. It also has an option to send the output to the playtest area for easy testing.`
 
 // TODO: Remove me, move to process.env
-const API_URL = 'https://localhost:8001'
+// const API_URL = 'https://localhost:8001'
 export class Output extends ThothComponent<void> {
   constructor() {
     super('Output')
@@ -90,14 +90,15 @@ export class Output extends ThothComponent<void> {
     console.log('normalText is', normalText)
 
     if (normalText && node.data.voiceOutput && !normalText.startsWith('/')) {
-      const url = await axios.get(`${API_URL}/speech_to_text`, {
+      const body = {
         params: {
           text: normalText,
           character: 'none',
         },
-      })
-
-      text = url.data
+      }
+      alert('output.ts file called')
+      const url = await thoth.completion(body as any)
+      text = url as string
     }
 
     //just need a new check here for playtest send boolean

@@ -4,7 +4,7 @@
 /* eslint-disable no-console */
 /* eslint-disable require-await */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import axios from 'axios'
+// import axios from 'axios'
 import Rete from 'rete'
 
 import {
@@ -141,41 +141,26 @@ export class AgentTextCompletion extends ThothComponent<Promise<WorkerReturn>> {
     })
 
     console.log('filteredStop is', filteredStop)
-
-    const resp = await axios.post(
-      `${process.env.REACT_APP_API_URL ??
-      process.env.API_URL ??
-      'https://localhost:8001'
-      }/text_completion`,
-      {
-        prompt: prompt,
-        modelName: modelName,
-        temperature: temperature,
-        maxTokens: maxTokens,
-        topP: topP,
-        frequencyPenalty: frequencyPenalty,
-        presencePenalty: presencePenalty,
-        stop: filteredStop,
-      }
-    )
-    console.log('resp.data is ', resp.data)
-
-    const { success, choice, error } = resp.data
-
-    if (!success)
+    alert('AgentTextCompletion')
+    const { completion } = thoth
+    const body = {
+      prompt: prompt,
+      modelName: modelName,
+      temperature: temperature,
+      maxTokens: maxTokens,
+      topP: topP,
+      frequencyPenalty: frequencyPenalty,
+      presencePenalty: presencePenalty,
+      stop: filteredStop,
+    }
+    try {
+      const raw = (await completion(body as any)) as string
+      const result = raw?.trim()
       return {
-        output: 'Sorry, I had a completion error:' + error,
+        output: result,
       }
-
-    const res =
-      success !== 'false' && success !== false
-        ? choice.text
-        : 'Sorry, I had an error!'
-
-    console.log('success:', success, 'choice:', choice.text, 'res:', res)
-
-    return {
-      output: res,
+    } catch (error) {
+      throw new Error('Error in AgentTextCompletion')
     }
   }
 }

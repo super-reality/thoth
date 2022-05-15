@@ -2,7 +2,7 @@
 /* eslint-disable require-await */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
-import axios from 'axios'
+// import axios from 'axios'
 import Rete from 'rete'
 
 import {
@@ -54,15 +54,13 @@ export class CreateOrGetAgent extends ThothComponent<Promise<void>> {
   ) {
     const agent = inputs['agent'][0] as string
     const speaker = inputs['speaker'][0] as string
-
-    const resp = await axios.post(
-      `${process.env.REACT_APP_API_ROOT_URL}/createWikipediaEntity`,
-      {
-        speaker: speaker,
-        agent: agent,
-      }
-    )
-
-    console.log(resp.data)
+    //alert('Create Or Get Agent')
+    const data = {
+      speaker: speaker,
+      agent: agent,
+    }
+    // alert('createOrGetAgent')
+    const resp = await thoth.completion(data as any)
+    console.log(resp)
   }
 }

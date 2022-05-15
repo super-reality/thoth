@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import axios from 'axios'
 import Rete from 'rete'
 
 import {
@@ -57,7 +56,7 @@ export class ActionTypeComponent extends ThothComponent<Promise<WorkerReturn>> {
   // when we have enki hooked up and have grabbed all few shots, we would use the builder
   // to generate the appropriate inputs and ouputs for the fewshot at build time
   builder(node: ThothNode) {
-    if(!node.data.fewshot) node.data.fewshot = fewshot
+    if (!node.data.fewshot) node.data.fewshot = fewshot
     // create inputs here. First argument is the name, second is the type (matched to other components sockets), and third is the socket the i/o will use
     const inp = new Rete.Input('action', 'Action', stringSocket)
     const out = new Rete.Output('actionType', 'ActionType', stringSocket)
@@ -83,35 +82,30 @@ export class ActionTypeComponent extends ThothComponent<Promise<WorkerReturn>> {
     outputs: ThothWorkerOutputs,
     { silent, thoth }: { silent: boolean; thoth: EngineContext }
   ) {
+    const { completion } = thoth;
     const action = inputs['action'][0]
     const fewshot = node.data.fewshot as string
     const prompt = fewshot + action + ','
-
-    const resp = await axios.post(
-      `${process.env.REACT_APP_API_URL ??
-      process.env.API_URL ??
-      'https://localhost:8001'
-      }/text_completion`,
-      {
-        params: {
-          prompt: prompt,
-          modelName: 'davinci',
-          temperature: 0.0,
-          maxTokens: 100,
-          stop: ['\n'],
-        },
-      }
-    )
-
-    let result = ''
-    const { success, choice } = resp.data
-    if (success) {
-      result = choice?.trim()
-      if (!silent) node.display(result)
+    alert('actiontype')
+    const body = {
+      params: {
+        prompt: prompt,
+        modelName: 'davinci',
+        temperature: 0.0,
+        maxTokens: 100,
+        stop: ['\n'],
+      },
     }
+    try {
+      const resp = (await completion(body as any)) as string
+      const result = resp?.trim()
+      if (!silent) node.display(result)
 
-    return {
-      actionType: result,
+      return {
+        actionType: result,
+      }
+    } catch (err) {
+      throw new Error('Error in ActionType worker')
     }
   }
 }

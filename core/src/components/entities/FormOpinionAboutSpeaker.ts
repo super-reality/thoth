@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable require-await */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import axios from 'axios'
+// import axios from 'axios'
 import Rete from 'rete'
 
 import {
@@ -108,17 +108,15 @@ export class FormOpinionAboutSpeaker extends ThothComponent<
       return el.length > 0
     })
     const _parameters = { candidate_labels: parameters }
-
-    const resp = await axios.post(
-      `${process.env.REACT_APP_API_URL}/hf_request`,
-      {
-        inputs: action as string,
-        model: 'facebook/bart-large-mnli',
-        parameters: _parameters,
-        options: undefined,
-      }
-    )
-
+    const body = {
+      inputs: action as string,
+      model: 'facebook/bart-large-mnli',
+      parameters: _parameters,
+      options: undefined,
+    }
+    const resp = await thoth.completion(body)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const { success, data } = resp.data
 
     const result: any = success ? data : null
