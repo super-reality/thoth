@@ -57,8 +57,12 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
     useState('')
   const [discord_spell_handler_update, setDiscordSpellHandlerUpdate] =
     useState('')
-  const [discord_spell_handler_metadata, setDiscordSpellHandlerMetadata] = useState('')
-  const [discord_spell_handler_slash_command, setDiscordSpellHandlerSlashCommand] = useState('')
+  const [discord_spell_handler_metadata, setDiscordSpellHandlerMetadata] =
+    useState('')
+  const [
+    discord_spell_handler_slash_command,
+    setDiscordSpellHandlerSlashCommand,
+  ] = useState('')
 
   const [xrengine_spell_handler_incoming, setXREngineSpellHandlerIncoming] =
     useState('')
@@ -128,7 +132,7 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
     useState('')
 
   const [twilio_enabled, setTwilioEnabled] = useState(false)
-  const [twilio_account_sid, setTwilioAccoundSID] = useState('')
+  const [twilio_account_sid, setTwilioAccountSID] = useState('')
   const [twilio_auth_token, setTwilioAuthToken] = useState('')
   const [twilio_phone_number, setTwilioPhoneNumber] = useState('')
   const [twilio_bot_name, setTwilioBotName] = useState('')
@@ -237,7 +241,9 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
         setDiscordSpellHandlerIncoming(res.data.discord_spell_handler_incoming)
         setDiscordSpellHandlerUpdate(res.data.discord_spell_handler_update)
         setDiscordSpellHandlerMetadata(res.data.discord_spell_handler_metadata)
-        setDiscordSpellHandlerSlashCommand(res.data.discord_spell_handler_slash_command)
+        setDiscordSpellHandlerSlashCommand(
+          res.data.discord_spell_handler_slash_command
+        )
 
         setxrengine_enabled(res.data.xrengine_enabled === true)
         setXREngineUrl(res.data.xrengine_url)
@@ -302,7 +308,7 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
         )
 
         setTwilioEnabled(res.data.twilio_enabled === true)
-        setTwilioAccoundSID(res.data.twilio_account_sid)
+        setTwilioAccountSID(res.data.twilio_account_sid)
         setTwilioAuthToken(res.data.twilio_auth_token)
         setTwilioPhoneNumber(res.data.twilio_phone_number)
         setTwilioBotName(res.data.twilio_bot_name)
@@ -498,8 +504,12 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
           setDiscordSpellHandlerUpdate(
             responseData.discord_spell_handler_update
           )
-          setDiscordSpellHandlerMetadata(responseData.discord_spell_handler_metadata)
-          setDiscordSpellHandlerSlashCommand(responseData.discord_spell_handler_slash_command)
+          setDiscordSpellHandlerMetadata(
+            responseData.discord_spell_handler_metadata
+          )
+          setDiscordSpellHandlerSlashCommand(
+            responseData.discord_spell_handler_slash_command
+          )
 
           setXREngineSpellHandlerIncoming(
             responseData.xrengine_spell_handler_incoming
@@ -1133,7 +1143,9 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
                     setDiscordSpellHandlerUpdate(event.target.value)
                   }}
                 >
-                  <option value='null' selected>--Disabled--</option>
+                  <option value="null" selected>
+                    --Disabled--
+                  </option>
                   {spellList.length > 0 &&
                     spellList.map((spell, idx) => (
                       <option value={spell.name} key={idx}>
@@ -1153,7 +1165,9 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
                     setDiscordSpellHandlerMetadata(event.target.value)
                   }}
                 >
-                  <option value='null' selected>--Disabled--</option>
+                  <option value="null" selected>
+                    --Disabled--
+                  </option>
                   {spellList.length > 0 &&
                     spellList.map((spell, idx) => (
                       <option value={spell.name} key={idx}>
@@ -1162,7 +1176,7 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
                     ))}
                 </select>
               </div>
-              
+
               <div className="form-item agent-select">
                 <span className="form-item-label">Slash Command Handler</span>
                 <select
@@ -1173,7 +1187,9 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
                     setDiscordSpellHandlerSlashCommand(event.target.value)
                   }}
                 >
-                  <option value='null' selected>--Disabled--</option>
+                  <option value="null" selected>
+                    --Disabled--
+                  </option>
                   {spellList.length > 0 &&
                     spellList.map((spell, idx) => (
                       <option value={spell.name} key={idx}>
@@ -1830,7 +1846,7 @@ const EntityWindow = ({ id, updateCallback, greetings }) => {
                   type="text"
                   defaultValue={twilio_account_sid}
                   onChange={e => {
-                    setTwilioAccoundSID(e.target.value)
+                    setTwilioAccountSID(e.target.value)
                   }}
                 />
               </div>
