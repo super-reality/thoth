@@ -48,11 +48,16 @@ export class Entity {
     discord_empty_responses: string,
     discord_greeting: any,
     spell_handler: string,
+    spell_handler_update: string,
+    spell_handler_metadata: string,
+    spell_handler_slash_command: string,
     spell_version: string,
     use_voice: boolean,
     voice_provider: string,
     voice_character: string,
     voice_language_code: string,
+    discord_echo_slack: boolean,
+    discord_echo_format: string,
     haveCustomCommands: boolean,
     custom_commands: any[]
   ) {
@@ -64,7 +69,18 @@ export class Entity {
       spell: spell_handler,
       version: spell_version,
     })
-
+    const updateSpellHandler = spell_handler_update ? await CreateSpellHandler({
+      spell: spell_handler_update,
+      version: spell_version
+    }) : null
+    const metadataSpellHandler = spell_handler_metadata ? await CreateSpellHandler({
+      spell: spell_handler_metadata,
+      version: spell_version
+    }) : null
+    const slashCommandSpellHandler = spell_handler_slash_command ? await CreateSpellHandler({
+      spell: spell_handler_slash_command,
+      version: spell_version
+    }) : null
     this.discord = new discord_client()
     console.log('createDiscordClient')
     await this.discord.createDiscordClient(
@@ -76,10 +92,15 @@ export class Entity {
       discord_empty_responses,
       discord_greeting,
       spellHandler,
+      updateSpellHandler,
+      metadataSpellHandler,
+      slashCommandSpellHandler,
       use_voice,
       voice_provider,
       voice_character,
       voice_language_code,
+      discord_echo_slack,
+      discord_echo_format,
       haveCustomCommands,
       custom_commands
     )
@@ -448,6 +469,7 @@ export class Entity {
     slack_port: any,
     slack_verification_token: any,
     slack_greeting: any,
+    slack_echo_channel: any,
     slack_spell_handler_incoming: any,
     spell_version: any,
     haveCustomCommands: boolean,
@@ -464,7 +486,6 @@ export class Entity {
 
     this.slack = new slack_client()
     this.slack.createSlackClient(
-      this.app,
       spellHandler,
       {
         slack_token,
@@ -474,6 +495,7 @@ export class Entity {
         slack_port,
         slack_verification_token,
         slack_greeting,
+        slack_echo_channel,
         haveCustomCommands,
         custom_commands,
       },
@@ -648,7 +670,9 @@ export class Entity {
     }
 
     if (data.discord_enabled) {
-      const [ greeting ] = await database.instance.getGreeting(data.discord_greeting_id)
+      const [greeting] = await database.instance.getGreeting(
+        data.discord_greeting_id
+      )
       this.startDiscord(
         data.discord_api_key,
         data.discord_starting_words,
@@ -657,11 +681,16 @@ export class Entity {
         data.discord_empty_responses,
         greeting,
         data.discord_spell_handler_incoming,
+        data.discord_spell_handler_update,
+        data.discord_spell_handler_metadata,
+        data.discord_spell_handler_slash_command,
         data.spell_version,
         data.use_voice,
         data.voice_provider,
         data.voice_character,
         data.voice_language_code,
+        data.discord_echo_slack,
+        data.discord_echo_format,
         haveCustomCommands,
         custom_commands
       )
@@ -770,7 +799,9 @@ export class Entity {
     }
 
     if (data.slack_enabled) {
-      const [ greeting ] = await database.instance.getGreeting(data.slack_greeting_id)
+      const [greeting] = await database.instance.getGreeting(
+        data.slack_greeting_id
+      )
       this.startSlack(
         data.slack_token,
         data.slack_signing_secret,
@@ -779,6 +810,7 @@ export class Entity {
         data.slack_port,
         data.slack_verification_token,
         greeting,
+        data.slack_echo_channel,
         data.slack_spell_handler_incoming,
         data.spell_version,
         haveCustomCommands,
