@@ -11,6 +11,8 @@ import { detectOsOption } from './utils'
 import { removeEmojisFromString } from '../../utils/utils'
 import { cacheManager } from '../../cacheManager'
 import { tts } from '../../systems/googleTextToSpeech'
+import { getAudioUrl } from '../../routes/getAudioUrl'
+import { tts_tiktalknet } from '../../systems/tiktalknet'
 
 export class zoom_client {
   async createZoomClient(spellHandler, settings, entity) {
@@ -125,14 +127,15 @@ export class zoom {
     const participantsDiv = await this.page.$x(
       "//a[contains(text(), 'Participants')]"
     )
-    if(participantsDiv.length > 0) await participantsDiv[0].evaluate(b => b.click())
+    if (participantsDiv.length > 0)
+      await participantsDiv[0].evaluate(b => b.click())
     let meetingHost = await this.page.evaluate(async () => {
       // Get the element containing the details of the host of the meeting
       const el = document.getElementById('participants-list-1')
       const displayName = el?.querySelector('.participants-item__display-name')
       return displayName?.textContent
     })
-    await new Promise((resolve) => setTimeout(resolve, 5000))
+    await new Promise(resolve => setTimeout(resolve, 5000))
     setInterval(async () => {
       //live-transcription-subtitle
       let text = await this.page.evaluate(async () => {
@@ -145,7 +148,10 @@ export class zoom {
 
       text = text?.toLowerCase()?.trim()
       if ((text && text !== undefined) || text?.length <= 0) {
-        if ((this.lastResponse && text.includes(this.lastResponse)) || (this.lastMessage && text.includes(this.lastMessage))) {
+        if (
+          (this.lastResponse && text.includes(this.lastResponse)) ||
+          (this.lastMessage && text.includes(this.lastMessage))
+        ) {
           return
         }
 
@@ -180,21 +186,36 @@ export class zoom {
           response = cache
           console.log('got from cache:', cache)
         } else {
-          const fileId = await tts(response as string)
-          const url =
-            (process.env.FILE_SERVER_URL?.endsWith('/')
-              ? process.env.FILE_SERVER_URL
-              : process.env.FILE_SERVER_URL + '/') + fileId
-
-          console.log('url:', url)
-          response = url
+          if (this.settings.voice_provider === 'google') {
+            const fileId = await tts(response as string)
+            const url =
+              (process.env.FILE_SERVER_URL?.endsWith('/')
+                ? process.env.FILE_SERVER_URL
+                : process.env.FILE_SERVER_URL + '/') + fileId
+            response = url
+          } else if (this.settings.voice_provider === 'uberduck') {
+            const url = await getAudioUrl(
+              process.env.UBER_DUCK_KEY as string,
+              process.env.UBER_DUCK_SECRET_KEY as string,
+              voiceCharacter,
+              response as string
+            )
+            response = url
+          } else {
+            const fileId = await tts_tiktalknet(response, voiceCharacter)
+            const url =
+              (process.env.FILE_SERVER_URL?.endsWith('/')
+                ? process.env.FILE_SERVER_URL
+                : process.env.FILE_SERVER_URL + '/') + fileId
+            response = url
+          }
         }
         try {
           await this.playAudio(response)
           cacheManager.instance.set('voice_' + temp, response)
           this.lastResponse = tempResp.toLowerCase()
 
-          await new Promise((resolve) => setTimeout(resolve, 4000))
+          await new Promise(resolve => setTimeout(resolve, 4000))
           await this.clickElementById('button', 'audioOptionMenu')
           await this.catchScreenshot()
           const linkHandlers1 = await this.page.$x(
@@ -207,7 +228,7 @@ export class zoom {
             console.log('Link not found')
           }
         } catch (e) {
-          console.log('error in init ::: ', e);
+          console.log('error in init ::: ', e)
         }
       }
     }, 5000)
@@ -264,7 +285,7 @@ export class zoom {
         console.log('Link not found')
       }
     } catch (e) {
-      console.log('error in playAudio ::: ', e);
+      console.log('error in playAudio ::: ', e)
     }
     this.catchScreenshot()
   }
