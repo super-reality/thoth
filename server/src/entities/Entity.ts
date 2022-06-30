@@ -629,7 +629,11 @@ export class Entity {
   }
 
   constructor(data: any, port: number) {
-    this.init(data, port)
+    try {
+      this.init(data, port)
+    } catch (e) {
+      console.log('Error in initializing entity:', data, 'error:', e)
+    }
   }
 
   async init(data: any, port: number) {

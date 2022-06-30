@@ -64,6 +64,7 @@ async function init() {
   await initClassifier()
   await initTextToSpeech()
   new cacheManager()
+  await cacheManager.instance._delete('CACHED_FREE_PORTS')
   await initWeaviateClient(
     process.env.WEAVIATE_IMPORT_DATA?.toLowerCase().trim() === 'true',
     process.env.CLASSIFIER_IMPORT_DATA?.toLowerCase().trim() === 'true'
