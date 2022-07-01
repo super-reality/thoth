@@ -1,5 +1,5 @@
 {
-  "name": "@latitudegames/thoth-sharedb",
+  "name": "@oneirocom/thoth-sharedb",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,8 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Michael Sharpe",
+  "license": "MIT",
   "dependencies": {
     "@teamwork/websocket-json-stream": "^2.0.0",
     "express": "^4.17.3",

@@ -1,11 +1,11 @@
 {
-  "name": "@latitudegames/thoth-server",
+  "name": "@oneirocom/thoth-server",
   "version": "0.1.0",
   "private": true,
   "description": "Backend server for the for AI storytelling toolset, Thoth.",
   "main": "index.js",
-  "author": "tech@latitude.io",
-  "license": "ISC",
+  "author": "Michael Sharpe",
+  "license": "MIT",
   "scripts": {
     "build": "yarn clean && tsc",
     "coverage": "jest --coverage --silent",

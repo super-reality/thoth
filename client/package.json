@@ -1,5 +1,5 @@
 {
-  "name": "@latitudegames/thoth-client",
+  "name": "@oneirocom/thoth-client",
   "version": "0.1.0",
   "license": "Apache-2.0",
   "author": "Michael Sharpe <m.sharpe@project89.org> (https://www.project89.org)",
@@ -17,7 +17,7 @@
     "build": "yarn clean && vite build ",
     "build:analyze": "BUNDLE_ANALYZE=true yarn build",
     "test": "echo test",
-    "install:canary": "yarn add @latitudegames/thoth-core@canary"
+    "install:canary": "yarn add @oneirocom/thoth-core@canary"
   },
   "resolutions": {
     "@types/react": "18.0.0"
