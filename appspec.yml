@@ -1,5 +1,6 @@
 version: 0.0
 os: linux
+runs-on: ubuntu-latest
 files:
   - source: /
     destination: /opt/thoth
