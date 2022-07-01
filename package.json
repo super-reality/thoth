@@ -1,8 +1,8 @@
 {
-  "name": "@oneirocom/thoth",
+  "name": "@oneirocom/thoth-server",
   "version": "0.0.1",
   "private": true,
-  "license": "apache 2.0",
+  "license": "MIT",
   "author": "Michael Sharpe <m.sharpe@project89.org> (https://www.project89.org)",
   "contributors": [
     "Sean Gillespie <s.gillespie@project89.org>",
@@ -113,5 +113,18 @@
   },
   "browser": {
     "https": "https-browserify"
-  }
+  },
+  "description": "Thoth is a multishot system builder. It leverages a visual coding style interface to allows game designers and developers to rapidly create powerful natural language systems and prototype games.",
+  "main": ".eslintrc.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheNexusCity/thoth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheNexusCity/thoth/issues"
+  },
+  "homepage": "https://github.com/TheNexusCity/thoth#readme"
 }
